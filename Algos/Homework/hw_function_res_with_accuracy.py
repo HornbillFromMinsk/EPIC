@@ -6,15 +6,15 @@ Find such a number x
 
 EPS = 10 ** (-6)
  
-def f(x, C):
-	return (x * x) - (x ** (1/2)) - C
+def f(x):
+	return (x * x) + (x ** (1/2))
  
 def good(x, C):
-	return f(x, C) - f(x - EPS, C) <= 0
+	return f(x) - C < EPS
  
-l, r = 0, 100
-ops = 100
-C = 2.0000000000
+ops = 1000
+C = 18.0000000000
+l, r = -1, C
 while ops > 0:
 	mid = float (l + r) / 2
 	if good(mid, C):
@@ -22,4 +22,5 @@ while ops > 0:
 	else:
 		r = mid
 	ops -= 1
-print(l, r)
+	
+print(f"{l:.6f}")
