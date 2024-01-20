@@ -3,9 +3,8 @@ VERY EASY TASK
 min time to print n copies
 '''
 
-
 def good(t, x, y):
-    return t / x + t / y < n
+    return t / x + t / y <= n
 
 def bin_find_min_time(n, x, y):
     # Initially we can print the first copy using only one printer
@@ -14,7 +13,7 @@ def bin_find_min_time(n, x, y):
         return t
     n -= 1
     l = 0
-    r = (n + 1) // t + 1
+    r = (n + 1) * t
 
     while l < r - 1:
         mid = (l + r) // 2
@@ -29,4 +28,3 @@ if __name__=='__main__':
     n, x, y = map(int, input().split())
 
     print(bin_find_min_time(n, x, y))
-        

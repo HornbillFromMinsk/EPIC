@@ -7,57 +7,66 @@ A natural number will be called special if any three consecutive digits in it fo
 
 Answer should be outputed modulo 10^9 + 9
 
+Oservations:
+if len > 3, we can not have zeros, since the condition (any three consecutive digits form prime) will not be satisfied.
+
 """
 from math import sqrt
  
 def is_prime(n):
     if n <= 3:
         return True
-    for i in range(3, n//2, 2):
+    if n % 2 == 0:
+        return False
+
+    for i in range(3, int(sqrt(n)) + 1, 2):
         if n % i == 0:
             return False
     return True
+
 def count_3digit_primes():
     c = 0
+    primes = set()
     for i in range(100, 1000):
         if is_prime(i):
             c += 1
-    return c
+            primes.add(i)
+    return c, primes
 
-def get_max_square(a:list, n:int, m:int):
- 
+
+
+def get_special_number_count(n:int):
+    dp = {}
+    c, primes = count_3digit_primes()
+
+    if n == 3:
+        return c
+    
+    prime_endings = set(map(lambda x: x % 100, primes))  
+
     # DP Initialization
-    dp = a.copy()
-    max_dp = 1
-    coord = (1, 1)
+    for i in prime_endings:
+        dp[i] = [0] * (n + 1)
 
-    for i in range(n - 1):
-        for j in range(m - 1):
-            if a[i][j] == 1:
-                if not(coord):
-                    coord = (i, j)
-                if ((a[i][j + 1] == 1) & (a[i + 1][j + 1] == 1) & (a[i + 1][j]) == 1):
-                    if min(i, j) > 0:
-                        dp[i][j] += max(min(a[i - 1][j], a[i - 1][j - 1], a[i][j - 1]), 1)
-                    else:
-                        dp[i][j] += 1
-                    if dp[i][j] >= max_dp:
-                        max_dp = dp[i][j]
-                        coord = (i - (max_dp - 3), j - (max_dp - 3))
+    for p in primes:
+        if p % 100 > 9:
+            dp[p % 100][3] += 1
 
-                    max_dp = max(max_dp, dp[i][j])
- 
-    return max_dp, coord
+    s = 0
 
-def matrix_input(n:int, m:int):
-    a = []
-    for _ in range(n):
-        a.append(list(map(int, input().split())))
-    return a
+    for i in range(4, n + 1):
+        for p in primes:
+            if (p // 10) in dp:
+                dp[p % 100][i] += dp[p // 10][i -1]
 
+    for v in dp.values():
+        s += v[n]
+
+    return s
 
     
 if __name__ == '__main__':
-    const = 10**9
-    a = count_3digit_primes()
-    print(a % (const + 9))
+    const = 10**9 + 9
+    n = int(input())
+    print(get_special_number_count(n) % const)
+
